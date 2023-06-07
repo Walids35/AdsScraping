@@ -38,3 +38,5 @@ Open a terminal on your favorite linux distro and copy the following commands:
 `./webserver`
 
 4. Make a POST request with your favorite API Platform
+
+`http://localhost:3000/scrape`
