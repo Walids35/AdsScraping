@@ -134,6 +134,23 @@ def getCardInfo(card):
 
     return data
 
+def download_image(url, path, filename):
+    # Create the directory if it doesn't exist
+    os.makedirs(path, exist_ok=True)
+
+    # Concatenate the path and filename
+    filepath = os.path.join(path, filename)
+
+    response = requests.get(url, stream=True)
+    if response.status_code == 200:
+        with open(filepath, "wb") as file:
+            response.raw.decode_content = True
+            shutil.copyfileobj(response.raw, file)
+        print("Image downloaded successfully.")
+    else:
+        print("Unable to download image.")
+        
+
 def getData(url):
     data=[]
     cards=loadCards(url)
