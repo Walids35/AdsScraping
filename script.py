@@ -54,40 +54,85 @@ def loadCards(id):
 
     
 def getCardInfo(card):
-    data={}
-# date diffusion , id , status et #platform
+    data = {}
+    # date diffusion , id , status et #platform
 
-    content1=card.find_elements(By.CSS_SELECTOR,"div.x3nfvp2.x1e56ztr")
-    for index, value in enumerate(content1):       
-        if (index ==0):
-            ajout=value.find_element(By.CSS_SELECTOR,"span.x8t9es0.xw23nyj.xo1l8bm.x63nzvj.x108nfp6.xq9mrsl.x1h4wwuj.xeuugli")
-            data['Status'] = ajout.text
-                
-        if (index == 1):
-            ajout=value.find_element(By.CSS_SELECTOR,"span.x8t9es0.xw23nyj.xo1l8bm.x63nzvj.x108nfp6.xq9mrsl.x1h4wwuj.xeuugli")
-            data['Date De Diffusion'] = ajout.text
-        if( index == 3):
-            ajout=value.find_element(By.CSS_SELECTOR,"span.x8t9es0.xw23nyj.xo1l8bm.x63nzvj.x108nfp6.xq9mrsl.x1h4wwuj.xeuugli")
-            data['ID']=ajout.text
-#image et video publier
-    img_element = card.find_elements(By.TAG_NAME, 'img')
-    vid_element = card.find_elements(By.TAG_NAME,'video')
-    
-    if(len(img_element)>len(vid_element)):
-        data['Nom_page']=img_element[0].get_attribute('alt')
-        data['Image_Publier']=img_element[0].get_attribute('src')
-    if(len(img_element)==len(vid_element)):
-        data['Nom_Page']=vid_element[0].get_attribute('alt')   
-        data['Video_Publier']=vid_element[0].get_attribute('src')
-#type
-    sponsored=card.find_elements(By.CSS_SELECTOR,"div._4ik4._4ik5")
-    data['type']=sponsored[0].text
-#description
-    description=card.find_elements(By.CSS_SELECTOR,("div._7jyr._a25- > span.x8t9es0.xw23nyj.xo1l8bm.x63nzvj.x108nfp6.xq9mrsl.x1h4wwuj.xeuugli > div > div > div"))
-    if(len(description)>0):
-        data['Description']=description[0].text
+    content1 = card.find_elements(By.CSS_SELECTOR, "div.x3nfvp2.x1e56ztr")
+    for index, value in enumerate(content1):
+        if index == 0:
+            ajout = value.find_element(
+                By.CSS_SELECTOR,
+                "span.x8t9es0.xw23nyj.xo1l8bm.x63nzvj.x108nfp6.xq9mrsl.x1h4wwuj.xeuugli",
+            )
+            data["Status"] = ajout.text
 
-    return(data)
+        if index == 1:
+            ajout = value.find_element(
+                By.CSS_SELECTOR,
+                "span.x8t9es0.xw23nyj.xo1l8bm.x63nzvj.x108nfp6.xq9mrsl.x1h4wwuj.xeuugli",
+            )
+            data["Date De Diffusion"] = ajout.text
+        if index == 2:
+            platformes = value.find_elements(By.CSS_SELECTOR, "div.xtwfq29")
+            platformes_ = []
+            for elem in platformes:
+                if "y1FuvrbyrJG.png" in elem.get_attribute("style"):
+                    platformes_.append("Instagram")
+                if ("w7LzRvH0HL-.png") and "0px -539px" in elem.get_attribute("style"):
+                    platformes_.append("Facebook")
+                if ("BIcOqnqNbE9.png") and ("-106px -186px") in elem.get_attribute(
+                    "style"
+                ):
+                    platformes_.append("AudienceNetwork")
+                if ("BIcOqnqNbE9.png") and ("-68px -289px") in elem.get_attribute(
+                    "style"
+                ):
+                    platformes_.append("Messenger")
+            data["Platformes"] = platformes_
+
+        if index == 3:
+            ajout = value.find_element(
+                By.CSS_SELECTOR,
+                "span.x8t9es0.xw23nyj.xo1l8bm.x63nzvj.x108nfp6.xq9mrsl.x1h4wwuj.xeuugli",
+            )
+            data["ID"] = ajout.text[4:]
+        if index == 4:
+            ajout = value.find_element(
+                By.CSS_SELECTOR,
+                "span.x8t9es0.xw23nyj.xo1l8bm.x63nzvj.x108nfp6.xq9mrsl.x1h4wwuj.xeuugli",
+            )
+            data["ID"] = ajout.text[4:]
+
+    # image et video publier
+    filename = data["ID"] + ".jpg"
+    vidname = data["ID"] + ".mp4"
+    img_element = card.find_elements(By.TAG_NAME, "img")
+    vid_element = card.find_elements(By.TAG_NAME, "video")
+
+    if len(img_element) > len(vid_element):
+        data["Nom_page"] = img_element[0].get_attribute("alt")
+        img_url = img_element[1].get_attribute("src")
+        data["contenu"] = os.path.abspath(filename)
+        download_image(img_url, path, filename)
+    if len(img_element) == len(vid_element):
+        data["Nom_Page"] = vid_element[0].get_attribute("alt")
+        data["contenu"] = vid_element[0].get_attribute("src")
+        vid_url = vid_element[0].get_attribute("src")
+        data["contenu"] = os.path.abspath(filename)
+        download_image(vid_url, path, vidname)
+    # type
+    sponsored = card.find_elements(By.CSS_SELECTOR, "div._4ik4._4ik5")
+    data["type"] = sponsored[0].text
+    # description
+    description = card.find_element(
+        By.CSS_SELECTOR,
+        (
+            "div.xh8yej3 > div > div > div.x6ikm8r.x10wlt62 > div > span > div > div > div"
+        ),
+    )
+    data["Description"] = description.text
+
+    return data
 
 def getData(url):
     data=[]
