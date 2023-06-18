@@ -29,7 +29,7 @@ Open a terminal on your favorite linux distro and copy the following commands:
 
 2. Clone Repo and Install Packages
 
-`git clone https://github.com/Walids35/FacebookScraping.git`
+`git clone [https://github.com/Walids35/FacebookScraping.git](https://github.com/Walids35/AdsScraping)`
 
 `pip install -r requirements.txt`
 
