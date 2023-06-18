@@ -6,9 +6,12 @@ import time
 import sys
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import os
+import requests
+import shutil
 
 id = sys.argv[1]
-
+path = "/Images" + id
 
 def loadCards(id):
     url = (
